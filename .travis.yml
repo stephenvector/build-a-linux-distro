@@ -1,5 +1,3 @@
 language: generic
-
-jobs:
-  build:
-    - ./build-linux-os.sh
+script:
+  - bash ./build-linux-os.sh
