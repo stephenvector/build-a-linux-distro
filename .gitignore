@@ -1,0 +1,5 @@
+*
+!.travis.yml
+!build-a-linux-os.sh
+!README.md
+!.gitignore
