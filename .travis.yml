@@ -1,0 +1,5 @@
+language: generic
+
+jobs:
+  build:
+    - ./build-linux-os.sh
