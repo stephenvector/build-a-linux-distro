@@ -1,6 +1,15 @@
 #!/bin/bash
 
+printLatestStableLinuxKernelVersion() {
+  unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
+  currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
+  echo $currentKernel
+}
+
 dir="$PWD"
+KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
+
+echo $KERNEL_VERSION
 
 # Install necessary packages
 sudo apt-get update -q
@@ -17,14 +26,15 @@ sudo apt-get install wget build-essential bison flex xz-utils gnupg2 -y -q
 mkdir ./linux-os-image
 
 # Download kernel source, verify source, & build kernel
-curl -OL https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.3.10.tar.xz
-curl -OL https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.3.10.tar.sign
+# Eventually we will need to add support for changing this based on the kernel version
+curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
+curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
 gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
-gpg2 --verify linux-5.3.10.tar.sign
-unxz linux-5.3.10.tar.xz
-gpg2 --verify linux-5.3.10.tar.sign linux-5.3.10.tar
-tar -xf linux-5.3.10.tar
-cd linux-5.3.10
+gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
+unxz "linux-$KERNEL_VERSION.tar.xz"
+gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
+tar -xf "linux-$KERNEL_VERSION.tar"
+cd "linux-$KERNEL_VERSION"
 make ARCH=x86_64 defconfig
 make
 cd "$dir"
