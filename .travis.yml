@@ -1,4 +1,5 @@
 language: generic
-script:
-  - bash ./build-a-linux-os.sh
-  - bash ./build-kernel.sh
+env:
+  - SCRIPT_FILENAME=./build-a-linux-os.sh
+  - SCRIPT_FILENAME=./build-kernel.sh
+script: "bash $SCRIPT_FILENAME"
