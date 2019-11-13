@@ -1,3 +1,4 @@
 language: generic
 script:
   - bash ./build-a-linux-os.sh
+  - bash ./build-kernel.sh

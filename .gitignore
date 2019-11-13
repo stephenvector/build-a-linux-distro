@@ -3,3 +3,4 @@
 !build-a-linux-os.sh
 !README.md
 !.gitignore
+!build-kernel.sh
