@@ -17,4 +17,5 @@ blocks:
           commands:
             - checkout
             - ls
-            - bash ./build-linux-os.sh
+            - chmod +x build-linux-os.sh
+            - bash build-linux-os.sh
