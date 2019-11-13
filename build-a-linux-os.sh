@@ -1,15 +1,6 @@
 #!/bin/bash
 
-printLatestStableLinuxKernelVersion() {
-  unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
-  currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
-  echo $currentKernel
-}
-
 dir="$PWD"
-KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
-
-echo $KERNEL_VERSION
 
 # Install necessary packages
 sudo apt-get update -q
