@@ -11,8 +11,10 @@ blocks:
         - name: 'Job #1'
           commands:
             - checkout
+            - ls 
             - bash ./build-kernel.sh
         - name: 'Job #2'
           commands:
             - checkout
+            - ls
             - bash ./build-linux-os.sh
