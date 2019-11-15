@@ -3,3 +3,5 @@ env:
   - SCRIPT_FILENAME=./build-a-linux-os.sh
   - SCRIPT_FILENAME=./build-kernel.sh
 script: "bash $SCRIPT_FILENAME"
+
+after_script: "bash ./create-file-system.sh"
