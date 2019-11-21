@@ -10,12 +10,13 @@ dir="$PWD"
 IMAGE_PATH="$PWD/image"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 
-# function cleanup {
+shopt -s extglob
+
+function cleanup {
   # cleanup old files - BE CAREFUL WITH THIS! Make sure you've added the proper
   # scripts to the ignored list
-  # shopt -s extglob
-  # rm -rf ./*.xz !(README.md|build-a-linux-os.sh|.git|.gitignore)
-# }
+  rm -rf ./*.xz !(README.md|build-a-linux-os.sh|.git|.gitignore)
+}
 
 function setup {
   # Install necessary packages
@@ -51,43 +52,11 @@ function create_file_system {
   # Delete old directory
   rm -rf "$IMAGE_PATH"
 
-  # Create a virtual file system
-
-  mkdir image
-  cd image
-  mkdir bin boot dev etc lib media mnt opt run sbin srv tmp usr var
-
-  mkdir etc/opt
-
-  mkdir usr/bin
-  mkdir usr/lib
-  mkdir usr/local
-  mkdir usr/sbin
-  mkdir usr/share
-  mkdir usr/include
-
-  cd usr/local
-
-  mkdir bin
-  mkdir etc
-  mkdir games
-  mkdir include
-  mkdir lib
-  mkdir man
-  mkdir sbin
-  mkdir share
-  mkdir src
-
-  # cd ../../
-
-  # # Make 64mb file
-  # dd if=/dev/zero of=./image.img bs=1024 count=$[1024*64]
-
-  # mkfs -t ext4 ./image.img
-
-  # mkdir /mnt/image
-
-  # mount -t auto -o loop ./image.img /mnt/image
+  mkdir -vp $IMAGE_PATH
+  mkdir -vp $IMAGE_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
+  mkdir -vp $IMAGE_PATH/etc/opt
+  mkdir -vp $IMAGE_PATH/usr/{bin,lib,sbin,share,include}
+  mkdir -vp $IMAGE_PATH/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
 }
 
 # glibc: Download, build, & install
@@ -163,7 +132,7 @@ function build_a_linux_os {
   add_coreutils
   add_kernel
   add_bash
-  add_
+  add_systemd
   add_grub2
 }
 
