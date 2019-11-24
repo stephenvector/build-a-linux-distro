@@ -7,16 +7,9 @@ function printLatestStableLinuxKernelVersion {
 }
 
 dir="$PWD"
-IMAGE_PATH="$PWD/image"
+MOUNT_PATH="/mnt/imagesd"
+IMAGE_FILE_PATH="$PWD/image.img"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
-
-shopt -s extglob
-
-function cleanup {
-  # cleanup old files - BE CAREFUL WITH THIS! Make sure you've added the proper
-  # scripts to the ignored list
-  rm -rf ./*.xz !(README.md|build-a-linux-os.sh|.git|.gitignore)
-}
 
 function setup {
   # Install necessary packages
@@ -24,13 +17,15 @@ function setup {
   sudo apt-get upgrade -y -q
   sudo apt-get install wget build-essential bison flex xz-utils gnupg2 -y -q
 
+  sudo apt-get install tree -y
+
   # Download GNU keyring to verify GNU utilities
   curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 }
 
 function kernel {
   # Download kernel source, verify source, & build kernel
-  export INSTALL_PATH="$IMAGE_PATH/boot"
+  export INSTALL_PATH="$MOUNT_PATH/boot"
   curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
   curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
   gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
@@ -49,14 +44,24 @@ function kernel {
 # using "Filesystem Hierarchy Standard" as a guide, creating
 # just the required directories for now.
 function create_file_system {
-  # Delete old directory
-  rm -rf "$IMAGE_PATH"
+  # Create a 128MB image file
+  dd if=/dev/zero of="$IMAGE_FILE_PATH" bs=1M count=128
 
-  mkdir -vp $IMAGE_PATH
-  mkdir -vp $IMAGE_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
-  mkdir -vp $IMAGE_PATH/etc/opt
-  mkdir -vp $IMAGE_PATH/usr/{bin,lib,sbin,share,include}
-  mkdir -vp $IMAGE_PATH/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
+  # Setup loop device for "virtual" block device
+  LOOP_DEVICE=$(sudo losetup -fP "$IMAGE_FILE_PATH" --show)
+
+  # Create a mount point directory
+  sudo rmdir "$MOUNT_PATH"
+  sudo mkdir "$MOUNT_PATH"
+
+  sudo mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
+
+  sudo chown -R $USER:$USER "$MOUNT_PATH"
+
+  mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
+  mkdir -vp $MOUNT_PATH/etc/opt
+  mkdir -vp $MOUNT_PATH/usr/{bin,lib,sbin,share,include}
+  mkdir -vp $MOUNT_PATH/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
 }
 
 # glibc: Download, build, & install
@@ -69,7 +74,7 @@ function add_glibc {
   cd glibc-2.30
   mkdir "$PWD/glibcbuild"
   cd "$PWD/glibcbuild"
-  "$dir/glibc-2.30/configure" --prefix="$IMAGE_PATH/usr"
+  "$dir/glibc-2.30/configure" --prefix="$MOUNT_PATH/usr"
   make
   make install 
 }
@@ -82,11 +87,10 @@ function add_coreutils {
   gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-8.31.tar.xz.sig coreutils-8.31.tar.xz
   tar xf coreutils-8.31.tar.xz
   cd "$dir/coreutils-8.31"
-  ./configure --prefix="$IMAGE_PATH"
+  ./configure --prefix="$MOUNT_PATH"
   make
   make install
 }
-
 
 # systemd: Download, build, & install
 function add_systemd {
@@ -95,7 +99,7 @@ function add_systemd {
   cd systemd-243
   ./configure
   make
-  make install DESTDIR="$IMAGE_PATH"
+  make install DESTDIR="$MOUNT_PATH"
 }
 
 # Download grub2: IN PROGRESS / NOT WORKING
@@ -106,7 +110,7 @@ function add_grub2 {
   gpg2 --verify --keyring ./gnu-keyring.gpg grub-2.04.tar.xz.sig grub-2.04.tar.xz
   tar xf grub-2.04.tar.xz
   cd grub-2.04
-  ./configure --prefix="$IMAGE_PATH"
+  ./configure --prefix="$MOUNT_PATH"
   make
   make install
 }
@@ -119,13 +123,12 @@ function add_bash {
   gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig bash-5.0.tar.gz
   tar xf bash-5.0.tar.gz
   cd bash-5.0
-  ./configure --prefix="$IMAGE_PATH"
+  ./configure --prefix="$MOUNT_PATH"
   make
   make install
 }
 
 function build_a_linux_os {
-  cleanup
   setup
   create_file_system
   add_glibc
