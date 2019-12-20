@@ -155,6 +155,10 @@ function add_bash {
   make install
 }
 
+function make_image {
+  grub-mkrescue -o linux.iso "$IMAGE_PATH"
+}
+
 function build_a_linux_os {
   cleanup
   setup
@@ -163,8 +167,9 @@ function build_a_linux_os {
   add_coreutils
   add_kernel
   add_bash
-  add_
-  add_grub2
+  add_systemd
+  # add_grub2
+  make_image
 }
 
 build_a_linux_os
