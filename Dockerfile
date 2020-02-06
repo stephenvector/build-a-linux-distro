@@ -2,6 +2,6 @@ FROM ubuntu:latest
 WORKDIR /build-linux-os
 COPY ./build-a-linux-os.sh .
 RUN chmod +x ./build-a-linux-os.sh
-RUN apt update
-RUN apt install build-essential -y
+RUN apt-get update
+RUN apt-get install wget build-essential bison flex xz-utils gnupg2 -y
 CMD [ "./build-a-linux-os.sh" ]
