@@ -1,2 +1,9 @@
 language: generic
-script: "bash ./build-a-linux-os.sh"
+
+services:
+  - docker
+  
+before_install:
+  - docker image build . -t linux:os
+
+script: "docker run linux:os"
