@@ -1,23 +1,21 @@
 #!/bin/bash
 
+dir="$PWD"
+MOUNT_PATH="/mnt/imagesd"
+IMAGE_FILE_PATH="$PWD/image.img"
+KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
+
 function printLatestStableLinuxKernelVersion {
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
   echo $currentKernel
 }
 
-dir="$PWD"
-MOUNT_PATH="/mnt/imagesd"
-IMAGE_FILE_PATH="$PWD/image.img"
-KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
-
 function setup {
   # Install necessary packages
-  sudo apt-get update -q
-  sudo apt-get upgrade -y -q
-  sudo apt-get install wget build-essential bison flex xz-utils gnupg2 -y -q
-
-  sudo apt-get install tree -y
+  apt-get update -q
+  apt-get upgrade -y -q
+  apt-get install curl tree wget build-essential bison flex xz-utils gnupg2 -y -q
 
   # Download GNU keyring to verify GNU utilities
   curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
