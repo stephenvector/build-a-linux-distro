@@ -32,10 +32,10 @@ function kernel {
   gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
   tar -xf "linux-$KERNEL_VERSION.tar"
   cd "linux-$KERNEL_VERSION"
-  make ARCH=x86_64 defconfig
-  make -j $(nproc)
-  make modules_install
-  make install
+  make --quiet ARCH=x86_64 defconfig
+  make --quiet -j $(nproc)
+  make --quiet modules_install
+  make --quiet install
 }
 
 # Create a directory for the final image & setup
@@ -73,8 +73,8 @@ function add_glibc {
   mkdir "$PWD/glibcbuild"
   cd "$PWD/glibcbuild"
   "$dir/glibc-2.30/configure" --prefix="$MOUNT_PATH/usr"
-  make
-  make install 
+  make --quiet
+  make --quiet install 
 }
 
 # GNU Coreutils: Download, build, & install
@@ -86,8 +86,8 @@ function add_coreutils {
   tar xf coreutils-8.31.tar.xz
   cd "$dir/coreutils-8.31"
   ./configure --prefix="$MOUNT_PATH"
-  make
-  make install
+  make --quiet
+  make --quiet install
 }
 
 # systemd: Download, build, & install
@@ -96,8 +96,8 @@ function add_systemd {
   tar xf v243.tar.gz
   cd systemd-243
   ./configure
-  make
-  make install DESTDIR="$MOUNT_PATH"
+  make --quiet
+  make --quiet install DESTDIR="$MOUNT_PATH"
 }
 
 # Download grub2: IN PROGRESS / NOT WORKING
@@ -109,8 +109,8 @@ function add_grub2 {
   tar xf grub-2.04.tar.xz
   cd grub-2.04
   ./configure --prefix="$MOUNT_PATH"
-  make
-  make install
+  make --quiet
+  make --quiet install
 }
 
 # Download & Build Bash
@@ -122,11 +122,12 @@ function add_bash {
   tar xf bash-5.0.tar.gz
   cd bash-5.0
   ./configure --prefix="$MOUNT_PATH"
-  make
-  make install
+  make --quiet
+  make --quiet install
 }
 
 function make_image {
+
   grub-mkrescue -o linux.iso "$IMAGE_PATH"
 }
 
@@ -138,7 +139,7 @@ function build_a_linux_os {
   add_kernel
   add_bash
   add_systemd
-  # add_grub2
+  add_grub2
   make_image
 }
 
