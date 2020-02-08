@@ -16,7 +16,7 @@ function setup {
   apt-get update -q
   apt-get upgrade -y -q
   apt-get install curl tree wget build-essential bison flex xz-utils gnupg2 -y -q
-
+  apt-get install ninja-build python3 python3-pip python3-setuptools python3-wheel -y -q
   # Download GNU keyring to verify GNU utilities
   curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 }
