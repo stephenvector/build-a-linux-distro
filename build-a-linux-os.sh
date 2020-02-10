@@ -16,7 +16,7 @@ function setup {
   apt-get update -q
   apt-get upgrade -y -q
   apt-get install curl tree wget build-essential bison flex xz-utils gnupg2 -y -q
-  apt-get install grub2 grub2-common ninja-build python3 python3-pip python3-setuptools python3-wheel -y -q
+  apt-get install ninja-build python3 python3-pip python3-setuptools python3-wheel -y -q
   # Download GNU keyring to verify GNU utilities
   curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 }
@@ -109,8 +109,8 @@ function add_grub2 {
   tar xf grub-2.04.tar.xz
   cd grub-2.04
   ./configure --prefix="$MOUNT_PATH"
-  make --quiet
-  make --quiet install
+  make
+  make install
 }
 
 # Download & Build Bash
