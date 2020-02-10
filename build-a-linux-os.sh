@@ -1,6 +1,9 @@
 #!/bin/bash
 
 function printLatestStableLinuxKernelVersion {
+  apt-get update -q
+  apt-get upgrade -y -q
+  apt-get install curl -y -q
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
   echo $currentKernel
@@ -10,6 +13,12 @@ dir="$PWD"
 MOUNT_PATH="/mnt/imagesd"
 IMAGE_FILE_PATH="$PWD/image.img"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
+
+echo KERNEL_VERSION
+echo KERNEL_VERSION
+echo KERNEL_VERSION
+echo KERNEL_VERSION
+echo KERNEL_VERSION
 
 function setup {
   # Install necessary packages
