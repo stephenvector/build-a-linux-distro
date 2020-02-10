@@ -14,11 +14,7 @@ MOUNT_PATH="/mnt/imagesd"
 IMAGE_FILE_PATH="$PWD/image.img"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 
-echo KERNEL_VERSION
-echo KERNEL_VERSION
-echo KERNEL_VERSION
-echo KERNEL_VERSION
-echo KERNEL_VERSION
+echo "$KERNEL_VERSION"
 
 function setup {
   # Install necessary packages
@@ -28,6 +24,7 @@ function setup {
   apt-get install ninja-build python3 python3-pip python3-setuptools python3-wheel -y -q
   # Download GNU keyring to verify GNU utilities
   curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
+  ls -la
 }
 
 function kernel {
@@ -117,7 +114,7 @@ function add_grub2 {
   gpg2 --verify --keyring ./gnu-keyring.gpg grub-2.04.tar.xz.sig grub-2.04.tar.xz
   tar xf grub-2.04.tar.xz
   cd grub-2.04
-  ./configure --prefix="$MOUNT_PATH"
+  ./configure --prefix="$MOUNT_PATH" --disable-werror --disable-efiemu --prefix="$MOUNT_PATH/usr" --sbindir="$MOUNT_PATH/sbin" --sysconfdir="$MOUNT_PATH/etc"
   make
   make install
 }
@@ -137,7 +134,7 @@ function add_bash {
 
 function make_image {
 
-  grub-mkrescue -o linux.iso "$IMAGE_PATH"
+  #grub-mkrescue -o linux.iso "$IMAGE_PATH"
 }
 
 function build_a_linux_os {
