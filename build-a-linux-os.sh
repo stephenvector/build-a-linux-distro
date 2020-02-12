@@ -132,10 +132,9 @@ function add_bash {
   make --quiet install
 }
 
-function make_image {
-
-  #grub-mkrescue -o linux.iso "$IMAGE_PATH"
-}
+# function make_image {
+#   #grub-mkrescue -o linux.iso "$IMAGE_PATH"
+# }
 
 function build_a_linux_os {
   setup
@@ -146,7 +145,7 @@ function build_a_linux_os {
   add_bash
   add_systemd
   add_grub2
-  make_image
+#   make_image
 }
 
 build_a_linux_os
