@@ -52,15 +52,15 @@ function create_file_system {
   dd if=/dev/zero of="$IMAGE_FILE_PATH" bs=1M count=128
 
   # Setup loop device for "virtual" block device
-  LOOP_DEVICE=$(sudo losetup -fP "$IMAGE_FILE_PATH" --show)
+  LOOP_DEVICE=$(losetup -fP "$IMAGE_FILE_PATH" --show)
 
   # Create a mount point directory
-  sudo rmdir "$MOUNT_PATH"
-  sudo mkdir "$MOUNT_PATH"
+  rmdir "$MOUNT_PATH"
+  mkdir "$MOUNT_PATH"
 
-  sudo mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
+  mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
 
-  sudo chown -R $USER:$USER "$MOUNT_PATH"
+  chown -R $USER:$USER "$MOUNT_PATH"
 
   mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
   mkdir -vp $MOUNT_PATH/etc/opt
