@@ -14,14 +14,13 @@ MOUNT_PATH="/mnt/imagesd"
 IMAGE_FILE_PATH="$PWD/image.img"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 
-echo "$KERNEL_VERSION"
+echo "Latest kernel version: $KERNEL_VERSION"
 
 function setup {
   # Install necessary packages
   apt-get update -q
   apt-get upgrade -y -q
-  apt-get install curl tree wget build-essential bison flex xz-utils gnupg2 -y -q
-  apt-get install ninja-build python3 python3-pip python3-setuptools python3-wheel -y -q
+  apt-get install curl xorriso wget build-essential bison flex xz-utils gnupg2 ninja-build python3 python3-pip python3-setuptools python3-wheel -y -q
   # Download GNU keyring to verify GNU utilities
   curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
   ls -la
@@ -132,9 +131,9 @@ function add_bash {
   make --quiet install
 }
 
-# function make_image {
-#   #grub-mkrescue -o linux.iso "$IMAGE_PATH"
-# }
+function make_image {
+  xorriso -devices
+}
 
 function build_a_linux_os {
   setup
@@ -145,7 +144,7 @@ function build_a_linux_os {
   add_bash
   add_systemd
   add_grub2
-#   make_image
+  make_image
 }
 
 build_a_linux_os
