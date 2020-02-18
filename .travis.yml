@@ -1,9 +1,6 @@
 language: generic
 
-services:
-  - docker
-  
 before_install:
-  - docker image build . -t linux:os
+  - chmod +x ./build-a-linux-os.sh
 
-script: "docker run linux:os"
+script: "./build-a-linux-os.sh"
