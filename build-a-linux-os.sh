@@ -59,7 +59,7 @@ function create_file_system {
 
   mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
 
-  chown -R $USER:$USER "$MOUNT_PATH"
+  # chown -R $USER:$USER "$MOUNT_PATH"
 
   mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
   mkdir -vp $MOUNT_PATH/etc/opt
