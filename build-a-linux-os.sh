@@ -130,9 +130,7 @@ function add_bash {
   make --quiet install
 }
 
-function make_image {
-
-}
+# function make_image {}
 
 function build_a_linux_os {
   make_image
