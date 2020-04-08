@@ -4,3 +4,20 @@ before_install:
   - chmod +x ./build-a-linux-os.sh
 
 script: "./build-a-linux-os.sh"
+
+addons:
+  apt:
+    packages:
+    - curl
+    - xorriso
+    - wget
+    - build-essential
+    - bison
+    - flex
+    - xz-utils
+    - gnupg2
+    - ninja-build
+    - python3
+    - python3-pip
+    - python3-setuptools
+    - python3-wheel
