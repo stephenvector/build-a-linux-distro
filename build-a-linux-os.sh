@@ -2,7 +2,6 @@
 
 function printLatestStableLinuxKernelVersion {
   apt-get update -q
-  apt-get upgrade -y -q
   apt-get install apt-utils curl -y -q
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
@@ -59,7 +58,7 @@ function create_file_system {
 
   mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
 
-  # chown -R $USER:$USER "$MOUNT_PATH"
+  chown -R $USER:$USER "$MOUNT_PATH"
 
   mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
   mkdir -vp $MOUNT_PATH/etc/opt
@@ -136,6 +135,7 @@ function make_image {
 }
 
 function build_a_linux_os {
+  make_image
   setup
   create_file_system
   add_glibc
