@@ -1,15 +1,15 @@
 #!/bin/bash
 
 function printLatestStableLinuxKernelVersion {
-  apt-get update -q
-  apt-get install apt-utils curl -y -q
+  # apt-get update -q
+  # apt-get install apt-utils curl -y -q
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
   echo $currentKernel
 }
 
 dir="$PWD"
-MOUNT_PATH="/mnt/imagesd"
+MOUNT_PATH="$PWD/imagesd"
 IMAGE_FILE_PATH="$PWD/image.img"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 
@@ -47,16 +47,16 @@ function kernel {
 # just the required directories for now.
 function create_file_system {
   # Create a 128MB image file
-  dd if=/dev/zero of="$IMAGE_FILE_PATH" bs=1M count=128
+  # dd if=/dev/zero of="$IMAGE_FILE_PATH" bs=1M count=128
 
   # Setup loop device for "virtual" block device
-  LOOP_DEVICE=$(losetup -fP "$IMAGE_FILE_PATH" --show)
+  # LOOP_DEVICE=$(losetup -fP "$IMAGE_FILE_PATH" --show)
 
   # Create a mount point directory
-  rmdir "$MOUNT_PATH"
-  mkdir "$MOUNT_PATH"
+  # rmdir "$MOUNT_PATH"
+  # mkdir "$MOUNT_PATH"
 
-  mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
+  # mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
 
   chown -R $USER:$USER "$MOUNT_PATH"
 
@@ -131,7 +131,7 @@ function add_bash {
 }
 
 function make_image {
-  xorriso -devices
+
 }
 
 function build_a_linux_os {
@@ -144,7 +144,8 @@ function build_a_linux_os {
   add_bash
   add_systemd
   add_grub2
-  make_image
+  
+  tree $MOUNT_PATH
 }
 
 build_a_linux_os

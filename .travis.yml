@@ -1,7 +1,7 @@
 language: generic
 
-before_install:
-  - chmod +x ./build-a-linux-os.sh
+# before_install:
+  # - chmod +x ./build-a-linux-os.sh
 
 script: "./build-a-linux-os.sh"
 
