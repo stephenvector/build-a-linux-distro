@@ -125,6 +125,8 @@ function build_a_linux_os {
   add_bash
   add_systemd
   add_syslinux
+  ls -la /home/travis/build/stephenvector/build-a-linux-os/
+  ls -la /home/travis/build/stephenvector/build-a-linux-os/imagesd/
   make_image
 }
 
