@@ -113,7 +113,7 @@ function add_bash {
 }
 
 function make_image {
-  genisoimage -o $IMAGE_FILE_PATH $MOUNT_PATH
+  grub-mkimage -o $IMAGE_FILE_PATH $MOUNT_PATH
   ls -la ./
 }
 
