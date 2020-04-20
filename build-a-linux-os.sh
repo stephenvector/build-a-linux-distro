@@ -41,8 +41,7 @@ function kernel {
 # using "Filesystem Hierarchy Standard" as a guide, creating
 # just the required directories for now.
 function create_file_system {
-  chown -R $USER:$USER "$MOUNT_PATH"
-
+  mkdir -vp $MOUNT_PATH
   mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
   mkdir -vp $MOUNT_PATH/etc/opt
   mkdir -vp $MOUNT_PATH/usr/{bin,lib,sbin,share,include}
