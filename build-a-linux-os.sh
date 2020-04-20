@@ -100,6 +100,7 @@ function add_bash {
 }
 
 function add_syslinux {
+  cd $PWD
   curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.gz
   curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.sign
   gpg2 --verify ./syslinux-6.03.tar.sign
@@ -110,6 +111,7 @@ function add_syslinux {
 }
 
 function make_image {
+  tree $PWD
   xorriso -as mkisofs -o ./image.img -e $MOUNT_PATH/syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
 }
 
