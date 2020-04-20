@@ -16,10 +16,6 @@ KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 echo "Latest kernel version: $KERNEL_VERSION"
 
 function setup {
-  # Install necessary packages
-  # apt-get update -q
-  # apt-get upgrade -y -q
-  # apt-get install curl xorriso wget build-essential bison flex xz-utils gnupg2 ninja-build python3 python3-pip python3-setuptools python3-wheel -y -q
   # Download GNU keyring to verify GNU utilities
   curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
   ls -la
@@ -46,18 +42,6 @@ function kernel {
 # using "Filesystem Hierarchy Standard" as a guide, creating
 # just the required directories for now.
 function create_file_system {
-  # Create a 128MB image file
-  # dd if=/dev/zero of="$IMAGE_FILE_PATH" bs=1M count=128
-
-  # Setup loop device for "virtual" block device
-  # LOOP_DEVICE=$(losetup -fP "$IMAGE_FILE_PATH" --show)
-
-  # Create a mount point directory
-  # rmdir "$MOUNT_PATH"
-  # mkdir "$MOUNT_PATH"
-
-  # mount -o loop="$LOOP_DEVICE" "$IMAGE_FILE_PATH" "$MOUNT_PATH"
-
   chown -R $USER:$USER "$MOUNT_PATH"
 
   mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
@@ -130,7 +114,9 @@ function add_bash {
   make --quiet install
 }
 
-# function make_image {}
+function make_image {
+  genisoimage -o $IMAGE_FILE_PATH $MOUNT_PATH
+}
 
 function build_a_linux_os {
   make_image
@@ -142,8 +128,7 @@ function build_a_linux_os {
   add_bash
   add_systemd
   add_grub2
-  
-  tree $MOUNT_PATH
+  make_image
 }
 
 build_a_linux_os
