@@ -1,8 +1,6 @@
 #!/bin/bash
 
 function printLatestStableLinuxKernelVersion {
-  # apt-get update -q
-  # apt-get install apt-utils curl -y -q
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
   echo $currentKernel
@@ -116,6 +114,7 @@ function add_bash {
 
 function make_image {
   genisoimage -o $IMAGE_FILE_PATH $MOUNT_PATH
+  ls -la ./
 }
 
 function build_a_linux_os {
