@@ -110,7 +110,7 @@ function add_syslinux {
 }
 
 function make_image {
-  xorriso -as mkisofs -o ./image.img -e syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
+  xorriso -as mkisofs -o ./image.img -e $MOUNT_PATH/syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
 }
 
 function build_a_linux_os {
