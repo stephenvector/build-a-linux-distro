@@ -34,6 +34,7 @@ function kernel {
   make --quiet -j $(nproc)
   make --quiet modules_install
   make --quiet install
+  tree .
 }
 
 # Create a directory for the final image & setup
@@ -86,19 +87,6 @@ function add_systemd {
   make --quiet install DESTDIR="$MOUNT_PATH"
 }
 
-# Download grub2: IN PROGRESS / NOT WORKING
-function add_grub2 {
-  curl -OL https://ftp.gnu.org/gnu/grub/grub-2.04.tar.xz
-  curl -OL https://ftp.gnu.org/gnu/grub/grub-2.04.tar.xz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg grub-2.04.tar.xz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg grub-2.04.tar.xz.sig grub-2.04.tar.xz
-  tar xf grub-2.04.tar.xz
-  cd grub-2.04
-  ./configure --prefix="$MOUNT_PATH" --disable-werror --disable-efiemu --prefix="$MOUNT_PATH/usr" --sbindir="$MOUNT_PATH/sbin" --sysconfdir="$MOUNT_PATH/etc"
-  make
-  make install
-}
-
 # Download & Build Bash
 function add_bash {
   curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
@@ -110,6 +98,16 @@ function add_bash {
   ./configure --prefix="$MOUNT_PATH"
   make --quiet
   make --quiet install
+}
+
+function add_syslinux {
+  curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.gz
+  curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.sign
+  gpg2 --verify ./syslinux-6.03.tar.sign
+  gpg2 --verify ./syslinux-6.03.tar.sign syslinux-6.03.tar.gz
+  tar xf syslinux-6.03.tar.gz
+  cp ./syslinux-6.03/efi64/efi/syslinux.efi $MOUNT_PATH
+  cp ./syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 $MOUNT_PATH
 }
 
 function make_image {
@@ -124,7 +122,7 @@ function build_a_linux_os {
   add_glibc
   add_coreutils
   add_kernel
-  add_bash
+  add_syslinux
   add_systemd
   add_grub2
   make_image
