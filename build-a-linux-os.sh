@@ -110,20 +110,18 @@ function add_syslinux {
 }
 
 function make_image {
-  grub-mkimage -o $IMAGE_FILE_PATH $MOUNT_PATH
-  ls -la ./
+  xorriso -as mkisofs -o ./image.img -e syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
 }
 
 function build_a_linux_os {
-  make_image
   setup
   create_file_system
   add_glibc
   add_coreutils
   add_kernel
-  add_syslinux
+  add_bash
   add_systemd
-  add_grub2
+  add_syslinux
   make_image
 }
 
