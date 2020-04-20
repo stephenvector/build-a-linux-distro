@@ -111,7 +111,8 @@ function add_syslinux {
 }
 
 function make_image {
-  tree $PWD
+  ls -la
+  echo $PWD
   xorriso -as mkisofs -o ./image.img -e $MOUNT_PATH/syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
 }
 
