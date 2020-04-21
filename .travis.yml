@@ -1,5 +1,7 @@
 language: generic
 script: "./build-a-linux-os.sh"
+before_install:
+  - pip3 install --user meson
 addons:
   apt:
     packages:
@@ -18,6 +20,7 @@ addons:
     - python3-wheel
     - genisoimage
     - gperf
+
 deploy:
   provider: releases
   api_key:

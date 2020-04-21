@@ -34,14 +34,14 @@ function kernel {
   make --quiet -j $(nproc)
   make --quiet modules_install
   make --quiet install
+  tree .
 }
 
 # Create a directory for the final image & setup
 # using "Filesystem Hierarchy Standard" as a guide, creating
 # just the required directories for now.
 function create_file_system {
-  chown -R $USER:$USER "$MOUNT_PATH"
-
+  mkdir -vp $MOUNT_PATH
   mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
   mkdir -vp $MOUNT_PATH/etc/opt
   mkdir -vp $MOUNT_PATH/usr/{bin,lib,sbin,share,include}
@@ -86,19 +86,6 @@ function add_systemd {
   make --quiet install DESTDIR="$MOUNT_PATH"
 }
 
-# Download grub2: IN PROGRESS / NOT WORKING
-function add_grub2 {
-  curl -OL https://ftp.gnu.org/gnu/grub/grub-2.04.tar.xz
-  curl -OL https://ftp.gnu.org/gnu/grub/grub-2.04.tar.xz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg grub-2.04.tar.xz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg grub-2.04.tar.xz.sig grub-2.04.tar.xz
-  tar xf grub-2.04.tar.xz
-  cd grub-2.04
-  ./configure --prefix="$MOUNT_PATH" --disable-werror --disable-efiemu --prefix="$MOUNT_PATH/usr" --sbindir="$MOUNT_PATH/sbin" --sysconfdir="$MOUNT_PATH/etc"
-  make
-  make install
-}
-
 # Download & Build Bash
 function add_bash {
   curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
@@ -112,13 +99,24 @@ function add_bash {
   make --quiet install
 }
 
+function add_syslinux {
+  cd $PWD
+  curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.gz
+  curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.sign
+  gpg2 --verify ./syslinux-6.03.tar.sign
+  gpg2 --verify ./syslinux-6.03.tar.sign syslinux-6.03.tar.gz
+  tar xf syslinux-6.03.tar.gz
+  cp ./syslinux-6.03/efi64/efi/syslinux.efi $MOUNT_PATH
+  cp ./syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 $MOUNT_PATH
+}
+
 function make_image {
-  grub-mkimage -o $IMAGE_FILE_PATH $MOUNT_PATH
-  ls -la ./
+  ls -la
+  echo $PWD
+  xorriso -as mkisofs -o ./image.img -e $MOUNT_PATH/syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
 }
 
 function build_a_linux_os {
-  make_image
   setup
   create_file_system
   add_glibc
@@ -126,7 +124,9 @@ function build_a_linux_os {
   add_kernel
   add_bash
   add_systemd
-  add_grub2
+  add_syslinux
+  ls -la /home/travis/build/stephenvector/build-a-linux-os/
+  ls -la /home/travis/build/stephenvector/build-a-linux-os/imagesd/
   make_image
 }
 
