@@ -17,6 +17,7 @@ addons:
     - python3-setuptools
     - python3-wheel
     - genisoimage
+    - gperf
 deploy:
   provider: releases
   api_key:
