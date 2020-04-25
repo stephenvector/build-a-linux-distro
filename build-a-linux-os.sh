@@ -78,6 +78,7 @@ function add_coreutils {
 
 # systemd: Download, build, & install
 function add_systemd {
+
   curl -OL https://github.com/systemd/systemd/archive/v243.tar.gz
   tar xf v243.tar.gz
   cd systemd-243
@@ -88,6 +89,7 @@ function add_systemd {
 
 # Download & Build Bash
 function add_bash {
+  cd $PWD
   curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
   curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz.sig
   gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig
@@ -111,8 +113,7 @@ function add_syslinux {
 }
 
 function make_image {
-  ls -la
-  echo $PWD
+  cd $PWD
   xorriso -as mkisofs -o ./image.img -e $MOUNT_PATH/syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
 }
 
