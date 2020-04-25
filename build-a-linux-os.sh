@@ -50,6 +50,7 @@ function create_file_system {
 
 # glibc: Download, build, & install
 function add_glibc {
+  cd $PWD
   curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz.sig
   curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz
   gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
@@ -65,6 +66,7 @@ function add_glibc {
 
 # GNU Coreutils: Download, build, & install
 function add_coreutils {
+  cd $PWD
   curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz.sig
   curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz
   gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-8.31.tar.xz.sig
@@ -78,7 +80,7 @@ function add_coreutils {
 
 # systemd: Download, build, & install
 function add_systemd {
-
+  cd $PWD
   curl -OL https://github.com/systemd/systemd/archive/v243.tar.gz
   tar xf v243.tar.gz
   cd systemd-243
