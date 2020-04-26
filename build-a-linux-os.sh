@@ -115,6 +115,7 @@ function build_a_linux_os {
   #add_grub
   dd if=/dev/zero of=os.img bs=1M count=512
   sudo losetup -f > first_unused_loop_device
+  echo $first_unused_loop_device
   sudo losetup -P $first_unused_loop_device os.img
   mkfs.ext4 $first_unused_loop_device
   sudo parted -s $first_unused_loop_device mklabel gpt
