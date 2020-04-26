@@ -123,7 +123,7 @@ function build_a_linux_os {
   
   mkdir /osmnt
 
-  mount -o loop $first_unused_loop_device /osmnt
+  sudo mount -o loop $first_unused_loop_device /osmnt
 
   #parted -s mklabel gpt
   
