@@ -114,7 +114,18 @@ function build_a_linux_os {
   #add_syslinux
   #add_grub
   dd if=/dev/zero of=os.img bs=1M count=100
-  sudo losetup -fP os.img
+  
+  first_unused_loop_device=$(losetup -f)
+
+  sudo losetup -P $first_unused_loop_device os.img
+  
+  parted -s $first_unused_loop_device mklabel gpt
+  
+  mkdir /osmnt
+
+  mount -o loop $first_unused_loop_device /osmnt
+}
+
   
   #parted -s mklabel gpt
   
