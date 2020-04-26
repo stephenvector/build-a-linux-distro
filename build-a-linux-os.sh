@@ -116,7 +116,7 @@ function build_a_linux_os {
   dd if=/dev/zero of=os.img bs=1M count=512
   sudo losetup -f > first_unused_loop_device
   sudo losetup -P $first_unused_loop_device os.img
-  mkfs.ext4 os.img
+  mkfs.ext4 $first_unused_loop_device
   sudo parted -s $first_unused_loop_device mklabel gpt
   sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
   sudo parted -s $first_unused_loop_device set 1 boot on
