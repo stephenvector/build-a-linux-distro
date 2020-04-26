@@ -121,6 +121,8 @@ function build_a_linux_os {
   
   sudo parted -s $first_unused_loop_device mklabel gpt
   
+  mkfs.ext4 os.img
+  
   sudo mkdir /osmnt
 
   sudo mount -o loop $first_unused_loop_device /osmnt
