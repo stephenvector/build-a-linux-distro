@@ -103,34 +103,21 @@ function add_bash {
   make --quiet install
 }
 
-function add_syslinux {
-  cd $PWD
-  curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.gz
-  curl -OL https://mirrors.edge.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.sign
-  gpg2 --verify ./syslinux-6.03.tar.sign
-  gpg2 --verify ./syslinux-6.03.tar.sign syslinux-6.03.tar.gz
-  tar xf syslinux-6.03.tar.gz
-  cp ./syslinux-6.03/efi64/efi/syslinux.efi $MOUNT_PATH
-  cp ./syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 $MOUNT_PATH
-}
-
-function make_image {
-  cd $PWD
-  xorriso -as mkisofs -o ./image.img -e $MOUNT_PATH/syslinux.efi -no-emul-boot -boot-load-size 4 -boot-info-table ./
+function add_grub {
+  
 }
 
 function build_a_linux_os {
-  setup
-  create_file_system
-  add_glibc
-  add_coreutils
-  add_kernel
-  add_bash
-  add_systemd
-  add_syslinux
-  ls -la /home/travis/build/stephenvector/build-a-linux-os/
-  ls -la /home/travis/build/stephenvector/build-a-linux-os/imagesd/
-  make_image
+  #setup
+  #create_file_system
+  #add_glibc
+  #add_coreutils
+  #add_kernel
+  #add_bash
+  #add_systemd
+  #add_syslinux
+  #add_grub
+  losetup -f
 }
 
 build_a_linux_os
