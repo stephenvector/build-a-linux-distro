@@ -122,7 +122,7 @@ function build_a_linux_os {
   sudo parted -s os.img set 1 boot on
   sudo parted -s os.img mkpart primary ext4 261MiB 100%
   sudo mkdir /osmnt
-  sudo mount -t ext4 os.img /osmnt
+  sudo mount -t ext4 -o loop os.img /osmnt
 }
 
 build_a_linux_os
