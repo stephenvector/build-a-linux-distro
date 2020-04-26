@@ -127,7 +127,7 @@ function build_a_linux_os {
   
   sudo mkdir /osmnt
 
-  sudo mount -o loop $first_unused_loop_device /osmnt
+  sudo mount $first_unused_loop_device /osmnt
 }
 
 build_a_linux_os
