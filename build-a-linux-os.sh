@@ -119,7 +119,7 @@ function build_a_linux_os {
 
   sudo losetup -P $first_unused_loop_device os.img
   
-  parted -s $first_unused_loop_device mklabel gpt
+  sudo parted -s $first_unused_loop_device mklabel gpt
   
   sudo mkdir /osmnt
 
