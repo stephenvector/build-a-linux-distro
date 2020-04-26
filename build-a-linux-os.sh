@@ -124,6 +124,8 @@ function build_a_linux_os {
   sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
   sudo parted -s $first_unused_loop_device set 1 boot on
   sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
+  
+  sudo lsblk -a
 }     
 
 build_a_linux_os
