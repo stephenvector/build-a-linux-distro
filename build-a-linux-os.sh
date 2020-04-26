@@ -117,12 +117,13 @@ function build_a_linux_os {
   #first_unused_loop_device=$(losetup -f)
   #sudo losetup -P $first_unused_loop_device os.img
   mkfs.ext4 os.img
-  #sudo parted -s os.img mklabel gpt
-  #sudo parted -s os.img mkpart primary fat32 1MiB 261MiB 
-  #sudo parted -s os.img set 1 boot on
-  #sudo parted -s os.img mkpart primary ext4 261MiB 100%
+  #
   mkdir ./osmnt
   sudo mount -t auto -o loop os.img ./osmnt
+  sudo parted -s ./osmnt mklabel gpt
+  sudo parted -s ./osmnt mkpart primary fat32 1MiB 261MiB 
+  sudo parted -s ./osmnt set 1 boot on
+  sudo parted -s ./osmnt mkpart primary ext4 261MiB 100%
 }
 
 build_a_linux_os
