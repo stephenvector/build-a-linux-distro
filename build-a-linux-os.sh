@@ -103,10 +103,6 @@ function add_bash {
   make --quiet install
 }
 
-function add_grub {
-  
-}
-
 function build_a_linux_os {
   #setup
   #create_file_system
