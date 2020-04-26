@@ -114,7 +114,7 @@ function build_a_linux_os {
   #add_syslinux
   #add_grub
   dd if=/dev/zero of=os.img bs=1M count=100
-  losetup -fP os.img
+  sudo losetup -fP os.img
 }
 
 build_a_linux_os
