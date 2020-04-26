@@ -113,20 +113,14 @@ function build_a_linux_os {
   #add_systemd
   #add_syslinux
   #add_grub
-  dd if=/dev/zero of=os.img bs=1M count=1000
-  
+  dd if=/dev/zero of=os.img bs=1M count=500
   first_unused_loop_device=$(losetup -f)
-
   sudo losetup -P $first_unused_loop_device os.img
-  
-  sudo parted -s $first_unused_loop_device mklabel gpt mkpart primary fat32 1MiB 261MiB 
-  
+  sudo parted -s $first_unused_loop_device mklabel gpt
+  sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
   sudo parted -s $first_unused_boot_device set 1 boot on
-
   sudo parted -s $first_unused_boot_device mkpart primary ext4 261MiB 100%
-  
   sudo mkdir /osmnt
-
   sudo mount $first_unused_loop_device /osmnt
 }
 
