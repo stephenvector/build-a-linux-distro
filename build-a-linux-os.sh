@@ -118,7 +118,7 @@ function build_a_linux_os {
   sudo losetup -P $first_unused_loop_device os.img
   if [ $? != 0 ]
   then
-    exit("nope")
+    exit(-1)
   fi
   
   parted -s $first_unused_loop_device mklabel gpt
