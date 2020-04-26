@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -u
+
 function printLatestStableLinuxKernelVersion {
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
@@ -125,7 +127,7 @@ function build_a_linux_os {
   sudo parted -s $first_unused_loop_device set 1 esp on
   sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
   sudo mkdir /mnt/efi
-  sudo mount $first_unused_loop_device /mnt/efi
+  sudo mount ${first_unused_loop_device}p1 /mnt/efi
   sudo grub-install --target=x86_64-efi --efi-directory=$first_unused_loop_device --bootloader-id=GRUB
   
   sudo lsblk -a
