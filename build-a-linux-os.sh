@@ -124,7 +124,8 @@ function build_a_linux_os {
   sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
   sudo parted -s $first_unused_loop_device set 1 esp on
   sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
-  
+  sudo mkdir /mnt/efi
+  sudo mount $first_unused_loop_device /mnt/efi
   sudo grub-install --target=x86_64-efi --efi-directory=$first_unused_loop_device --bootloader-id=GRUB
   
   sudo lsblk -a
