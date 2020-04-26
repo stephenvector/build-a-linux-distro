@@ -115,6 +115,7 @@ function build_a_linux_os {
   #add_grub
   dd if=/dev/zero of=os.img bs=1M count=100
   losetup -fP os.img
+  losetup -a
 }
 
 build_a_linux_os
