@@ -117,9 +117,6 @@ function build_a_linux_os {
   #add_grub
   dd if=/dev/zero of=os.img bs=1M count=512
   first_unused_loop_device=$(sudo losetup -f)
-  echo $first_unused_loop_device
-  
-
   sudo losetup -P $first_unused_loop_device os.img
   sudo mkfs.ext4 $first_unused_loop_device
   sudo parted -s $first_unused_loop_device mklabel gpt
@@ -128,7 +125,7 @@ function build_a_linux_os {
   sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
   sudo mkdir /mnt/efi
   sudo mount ${first_unused_loop_device}p1 /mnt/efi
-  sudo grub-install --target=x86_64-efi --efi-directory=$first_unused_loop_device --bootloader-id=GRUB
+  sudo grub-install --target=x86_64-efi --efi-directory=/mnt/efi --bootloader-id=GRUB
   
   sudo lsblk -a
 }     
