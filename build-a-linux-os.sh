@@ -115,7 +115,7 @@ function build_a_linux_os {
   #add_grub
   dd if=/dev/zero of=os.img bs=1M count=100
   $first_unused_loop_device=$(losetup -f)
-  sudo losetup -P $first_unused_loop_device os.img
+  sudo losetup -P os.img $first_unused_loop_device
   if [ $? != 0 ]
   then
     exit
