@@ -9,17 +9,8 @@ function printLatestStableLinuxKernelVersion {
 }
 
 dir="$PWD"
-MOUNT_PATH="$PWD/imagesd"
-IMAGE_FILE_PATH="$PWD/image.img"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 
-echo "Latest kernel version: $KERNEL_VERSION"
-
-function setup {
-  # Download GNU keyring to verify GNU utilities
-  curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
-  ls -la
-}
 
 function kernel {
   # Download kernel source, verify source, & build kernel
@@ -32,10 +23,11 @@ function kernel {
   gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
   tar -xf "linux-$KERNEL_VERSION.tar"
   cd "linux-$KERNEL_VERSION"
-  make --quiet ARCH=x86_64 defconfig
-  make --quiet -j $(nproc)
-  make --quiet modules_install
-  make --quiet install
+  make ARCH=x86_64 defconfig
+  make -j $(nproc)
+  make modules_install
+  make install
+  cd ..
 }
 
 # Create a directory for the final image & setup
