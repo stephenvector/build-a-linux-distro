@@ -7,28 +7,27 @@ before_install:
 addons:
   apt:
     packages:
-    - curl
-    - xorriso
-    - wget
-    - build-essential
-    - bison
-    - flex
-    - xz-utils
-    - gnupg2
-    - ninja-build
-    - python3
-    - python3-pip
-    - python3-setuptools
-    - python3-wheel
-    - genisoimage
-    - gperf
-    - libcap-dev
+      - curl
+      - wget
+      - build-essential
+      - bison
+      - flex
+      - xz-utils
+      - gnupg2
+      - ninja-build
+      - python3
+      - python3-pip
+      - python3-setuptools
+      - python3-wheel
+      - libelf-dev
+      - gperf
+      - libcap-dev
 
 deploy:
   provider: releases
   api_key:
     secure: Z5sqyr7m9PY9jEMv1wVLYMyj1vkp/FpBEpii+lPhzSx2GOfVSEKXVALQ7YJwbiu12Z6OXle5HySp4f3d21GoK9RUR/MnxT22wyLbbTZpGBkdgexVeWhbLDP8DQTNsLSaVAkAq4iMTVXrU652UECH0NyuBJgQ0wHoV8jLwOar/x8M18An9i6Y9hF4VCDC8prqkz+eigJFZEkkBvA9ChazxemjFi0yl7K5gRZ0N+CxDhJz9dzLznTc4ryola5SCRcBqzTy3gq1OiqdsTrIqbSoT4XSzYtH+Qq9ieS2/wjE+45Eo81Z+sJge5SijRFX3H+gdfDWXB3y3KlXbhfTu9QOr5dteh2hx1HQl2b5dEAHrOMCWTz/9pirgxPso7Iy+d3EYPZjTp9cLmn8VRktY39YHOzloTrIhr6VP7MvBbxMzGOnkUz9Ks64vI+Ypylwck3EOMRILPGqNkZGmOyWSBRuL0zU5SzC3x+lU9P9b0oanPqHj+/0cIl40r9jP76RoiWgnRIaQet/SMEdmLRpd+gn27Nsu8YL7D5jlh29axOYI+FUquLDhz8IuhCtNjOthxUBI0MzuwFgsXN4IHMMz74GzYuYk5Bz6YvkCuBe1CWyl1+NYKHeSy8SJjMxch5S9eOZKTV39T2aBvXp5Hoz7QYpD0tSrOULDZshqa6xqfagSUw=
-  file: image.img
+  file: os.img
   draft: true
   skip_cleanup: true
   on:

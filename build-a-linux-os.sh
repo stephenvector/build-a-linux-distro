@@ -23,7 +23,7 @@ function setup {
 
 function kernel {
   # Download kernel source, verify source, & build kernel
-  export INSTALL_PATH="$MOUNT_PATH/boot"
+  export INSTALL_PATH="/mnt/os/boot"
   curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
   curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
   gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
@@ -36,7 +36,6 @@ function kernel {
   make --quiet -j $(nproc)
   make --quiet modules_install
   make --quiet install
-  tree .
 }
 
 # Create a directory for the final image & setup
@@ -105,30 +104,35 @@ function add_bash {
   make --quiet install
 }
 
-function build_a_linux_os {
-  #setup
-  #create_file_system
-  #add_glibc
-  #add_coreutils
-  #add_kernel
-  #add_bash
-  #add_systemd
-  #add_syslinux
-  #add_grub
-  dd if=/dev/zero of=os.img bs=1M count=512
-  first_unused_loop_device=$(sudo losetup -f)
-  sudo losetup -P $first_unused_loop_device os.img
-  sudo mkfs.ext4 $first_unused_loop_device
-  sudo parted -s $first_unused_loop_device mklabel gpt
-  sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
-  sudo parted -s $first_unused_loop_device set 1 esp on
-  sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
-  sudo mkdir /mnt/efi
-  sudo mount ${first_unused_loop_device}p1 /mnt/efi
-  sudo grub-install --target=x86_64-efi --efi-directory=/mnt/efi --bootloader-id=GRUB
-  
-  sudo lsblk -a
-}     
+curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 
-build_a_linux_os
+dd if=/dev/zero of=os.img bs=1M count=512
+first_unused_loop_device=$(sudo losetup -f)
+sudo mkfs.ext4 os.img
+sudo losetup -P $first_unused_loop_device os.img
+sudo parted -s $first_unused_loop_device mktable gpt
+sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
+sudo parted -s $first_unused_loop_device set 1 esp on
+sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
+sudo mkdir -p /mnt/os/efi
+sudo mkdir -p /mnt/os/boot
 
+sudo mkfs.fat ${first_unused_loop_device}p1
+sudo mkfs.ext4 ${first_unused_loop_device}p2
+
+sudo mount ${first_unused_loop_device}p1 /mnt/os/efi
+sudo mount ${first_unused_loop_device}p2 /mnt/os/boot
+
+mkdir -vp /mnt/os/boot
+mkdir -vp /mnt/os/boot/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
+mkdir -vp /mnt/os/boot/etc/opt
+mkdir -vp /mnt/os/boot/usr/{bin,lib,sbin,share,include}
+mkdir -vp /mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
+
+kernel
+
+sudo grub-install --target=x86_64-efi --efi-directory=/mnt/os --bootloader-id=GRUB
+
+sudo umount /mnt/os/efi
+sudo umount /mnt/os/boot
+sudo losetup -d $first_unused_loop_device
