@@ -123,11 +123,11 @@ sudo mkfs.ext4 ${first_unused_loop_device}p2
 sudo mount ${first_unused_loop_device}p1 /mnt/os/efi
 sudo mount ${first_unused_loop_device}p2 /mnt/os/boot
 
-mkdir -vp /mnt/os/boot
-mkdir -vp /mnt/os/boot/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
-mkdir -vp /mnt/os/boot/etc/opt
-mkdir -vp /mnt/os/boot/usr/{bin,lib,sbin,share,include}
-mkdir -vp /mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
+sudo mkdir -vp /mnt/os/boot
+sudo mkdir -vp /mnt/os/boot/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
+sudo mkdir -vp /mnt/os/boot/etc/opt
+sudo mkdir -vp /mnt/os/boot/usr/{bin,lib,sbin,share,include}
+sudo mkdir -vp /mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
 
 kernel
 
