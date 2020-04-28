@@ -22,14 +22,14 @@ OS_ROOT_DIR=${dir}/mnt/os
   curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz
   gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
   gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig glibc-2.30.tar.xz
-  tar -xf glibc-2.30.tar.xz
-  cd glibc-2.30
-  mkdir "$PWD/glibcbuild"
-  cd "$PWD/glibcbuild"
-  "$dir/glibc-2.30/configure" --prefix="${pwd}/mnt/os/boot/usr"
-  make
-  make install 
-
+  # tar -xf glibc-2.30.tar.xz
+  #cd glibc-2.30
+  # mkdir "$PWD/glibcbuild"
+  #cd "$PWD/glibcbuild"
+  #"$dir/glibc-2.30/configure" --prefix="${pwd}/mnt/os/boot/usr"
+  #make
+  #make install 
+      
 
 # GNU Coreutils: Download, build, & install
 function add_coreutils {
