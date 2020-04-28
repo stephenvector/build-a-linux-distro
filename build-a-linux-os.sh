@@ -9,7 +9,6 @@ function printLatestStableLinuxKernelVersion {
 dir="$PWD"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 OS_ROOT_DIR=${dir}/mnt/os
-OS_IMAGE
 
 # Create a directory for the final image & setup
 # using "Filesystem Hierarchy Standard" as a guide, creating
