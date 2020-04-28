@@ -23,9 +23,9 @@ function kernel {
   gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
   tar -xf "linux-$KERNEL_VERSION.tar"
   cd "linux-$KERNEL_VERSION"
-  make ARCH=x86_64 defconfig
-  make -j $(nproc)
-  make modules_install
+  sudo make ARCH=x86_64 defconfig
+  sudo make -j $(nproc)
+  sudo make modules_install
   sudo make install
   cd ..
 }
@@ -123,7 +123,7 @@ sudo mkdir -vp /mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,
 
 kernel
 
-sudo grub-install --target=x86_64-efi --efi-directory=/mnt/os --bootloader-id=GRUB
+sudo grub-install --target=x86_64-efi --efi-directory=/mnt/os/efi --bootloader-id=GRUB
 
 sudo umount /mnt/os/efi
 sudo umount /mnt/os/boot
