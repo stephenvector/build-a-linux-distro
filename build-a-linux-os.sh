@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -u
-
 function printLatestStableLinuxKernelVersion {
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
@@ -10,39 +8,16 @@ function printLatestStableLinuxKernelVersion {
 
 dir="$PWD"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
-
-
-function kernel {
-  # Download kernel source, verify source, & build kernel
-  export INSTALL_PATH="/mnt/os/boot"
-  curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
-  curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
-  gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
-  gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
-  unxz "linux-$KERNEL_VERSION.tar.xz"
-  gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
-  tar -xf "linux-$KERNEL_VERSION.tar"
-  cd "linux-$KERNEL_VERSION"
-  sudo make ARCH=x86_64 defconfig
-  sudo make -j $(nproc)
-  sudo make modules_install
-  sudo make install
-  cd ..
-}
+OS_ROOT_DIR=${dir}/mnt/os
+OS_IMAGE
 
 # Create a directory for the final image & setup
 # using "Filesystem Hierarchy Standard" as a guide, creating
 # just the required directories for now.
-function create_file_system {
-  mkdir -vp $MOUNT_PATH
-  mkdir -vp $MOUNT_PATH/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
-  mkdir -vp $MOUNT_PATH/etc/opt
-  mkdir -vp $MOUNT_PATH/usr/{bin,lib,sbin,share,include}
-  mkdir -vp $MOUNT_PATH/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
-}
+
 
 # glibc: Download, build, & install
-function add_glibc {
+
   cd $PWD
   curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz.sig
   curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz
@@ -53,9 +28,9 @@ function add_glibc {
   mkdir "$PWD/glibcbuild"
   cd "$PWD/glibcbuild"
   "$dir/glibc-2.30/configure" --prefix="$MOUNT_PATH/usr"
-  make --quiet
-  make --quiet install 
-}
+  make
+  make install 
+
 
 # GNU Coreutils: Download, build, & install
 function add_coreutils {
@@ -100,17 +75,20 @@ curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 
 dd if=/dev/zero of=os.img bs=1M count=512
 first_unused_loop_device=$(sudo losetup -f)
-sudo mkfs.ext4 os.img
+
+mkfs.ext4 os.img
+
 sudo losetup -P $first_unused_loop_device os.img
 sudo parted -s $first_unused_loop_device mktable gpt
 sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
 sudo parted -s $first_unused_loop_device set 1 esp on
 sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
-sudo mkdir -p /mnt/os/efi
-sudo mkdir -p /mnt/os/boot
 
-sudo mkfs.fat ${first_unused_loop_device}p1
-sudo mkfs.ext4 ${first_unused_loop_device}p2
+mkdir -p ${pwd}/mnt/os/efi
+mkdir -p ${pwd}/mnt/os/boot
+
+mkfs.fat ${first_unused_loop_device}p1
+mkfs.ext4 ${first_unused_loop_device}p2
 
 sudo mount ${first_unused_loop_device}p1 /mnt/os/efi
 sudo mount ${first_unused_loop_device}p2 /mnt/os/boot
@@ -121,7 +99,21 @@ sudo mkdir -vp /mnt/os/boot/etc/opt
 sudo mkdir -vp /mnt/os/boot/usr/{bin,lib,sbin,share,include}
 sudo mkdir -vp /mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
 
-kernel
+  # Download kernel source, verify source, & build kernel
+  export INSTALL_PATH="/mnt/os/boot"
+  curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
+  curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
+  gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
+  gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
+  unxz "linux-$KERNEL_VERSION.tar.xz"
+  gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
+  tar -xf "linux-$KERNEL_VERSION.tar"
+  cd "linux-$KERNEL_VERSION"
+  make ARCH=x86_64 defconfig
+  make -j $(nproc)
+  make modules_install
+  make install
+  cd ..
 
 sudo grub-install --target=x86_64-efi --efi-directory=/mnt/os/efi --bootloader-id=GRUB
 
