@@ -26,7 +26,7 @@ function kernel {
   make ARCH=x86_64 defconfig
   make -j $(nproc)
   make modules_install
-  make install
+  sudo make install
   cd ..
 }
 
