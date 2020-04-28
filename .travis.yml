@@ -1,4 +1,5 @@
 dist: focal
+overwrite: true
 sudo: required
 script: "sudo ./build-a-linux-os.sh"
 before_install:
