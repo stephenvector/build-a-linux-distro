@@ -1,6 +1,6 @@
 dist: bionic
 sudo: required
-script: "./build-a-linux-os.sh"
+script: "sudo ./build-a-linux-os.sh"
 before_install:
   - pip3 install --user meson
   - chmod +x ./build-a-linux-os.sh
