@@ -18,7 +18,7 @@ OS_IMAGE
 
 # glibc: Download, build, & install
 
-  cd $PWD
+
   curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz.sig
   curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz
   gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
@@ -27,7 +27,7 @@ OS_IMAGE
   cd glibc-2.30
   mkdir "$PWD/glibcbuild"
   cd "$PWD/glibcbuild"
-  "$dir/glibc-2.30/configure" --prefix="$MOUNT_PATH/usr"
+  "$dir/glibc-2.30/configure" --prefix="${pwd}/mnt/os/boot/usr"
   make
   make install 
 
@@ -93,11 +93,11 @@ mkfs.ext4 ${first_unused_loop_device}p2
 sudo mount ${first_unused_loop_device}p1 /mnt/os/efi
 sudo mount ${first_unused_loop_device}p2 /mnt/os/boot
 
-sudo mkdir -vp /mnt/os/boot
-sudo mkdir -vp /mnt/os/boot/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
-sudo mkdir -vp /mnt/os/boot/etc/opt
-sudo mkdir -vp /mnt/os/boot/usr/{bin,lib,sbin,share,include}
-sudo mkdir -vp /mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
+
+mkdir -vp ${pwd}/mnt/os/boot/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
+mkdir -vp ${pwd}/mnt/os/boot/etc/opt
+mkdir -vp ${pwd}/mnt/os/boot/usr/{bin,lib,sbin,share,include}
+mkdir -vp ${pwd}/mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
 
   # Download kernel source, verify source, & build kernel
   export INSTALL_PATH="/mnt/os/boot"
@@ -115,8 +115,8 @@ sudo mkdir -vp /mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,
   make install
   cd ..
 
-sudo grub-install --target=x86_64-efi --efi-directory=/mnt/os/efi --bootloader-id=GRUB
+sudo grub-install --target=x86_64-efi --efi-directory=${pwd}/mnt/os/efi --bootloader-id=GRUB
 
-sudo umount /mnt/os/efi
-sudo umount /mnt/os/boot
+sudo umount ${pwd}/mnt/os/efi
+sudo umount ${pwd}/mnt/os/boot
 sudo losetup -d $first_unused_loop_device
