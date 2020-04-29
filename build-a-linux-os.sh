@@ -1,5 +1,7 @@
 #!/bin/bash
 
+curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
+
 function printLatestStableLinuxKernelVersion {
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
   currentKernel=$(echo $unparsedStableKernel | grep -Po '[0-9]+.[0-9]+.[0-9]+')
@@ -9,11 +11,8 @@ function printLatestStableLinuxKernelVersion {
 dir="$PWD"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 OS_ROOT_DIR=${dir}/mnt/os
-
-# Create a directory for the final image & setup
-# using "Filesystem Hierarchy Standard" as a guide, creating
-# just the required directories for now.
-
+EFI_MOUNT_DIR=${OS_ROOT_DIR}/efi
+BOOT_MOUNT_DIR=${OS_ROOT_DIR}/boot
 
 # glibc: Download, build, & install
 
@@ -70,9 +69,8 @@ function add_bash {
   make --quiet install
 }
 
-curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
-
 dd if=/dev/zero of=os.img bs=1M count=512
+
 first_unused_loop_device=$(sudo losetup -f)
 
 mkfs.ext4 os.img
@@ -83,23 +81,26 @@ sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB
 sudo parted -s $first_unused_loop_device set 1 esp on
 sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
 
-mkdir -p ${pwd}/mnt/os/efi
-mkdir -p ${pwd}/mnt/os/boot
+mkdir -p $EFI_MOUNT_DIR
+mkdir -p $BOOT_MOUNT_DIR
 
 mkfs.fat ${first_unused_loop_device}p1
 mkfs.ext4 ${first_unused_loop_device}p2
 
-sudo mount ${first_unused_loop_device}p1 /mnt/os/efi
-sudo mount ${first_unused_loop_device}p2 /mnt/os/boot
+sudo mount ${first_unused_loop_device}p1 $EFI_MOUNT_DIR
+sudo mount ${first_unused_loop_device}p2 $BOOT_MOUNT_DIR
 
+# Create a directory for the final image & setup
+# using "Filesystem Hierarchy Standard" as a guide, creating
+# just the required directories for now.
+mkdir -vp ${BOOT_MOUNT_DIR}/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
+mkdir -vp ${BOOT_MOUNT_DIR}/etc/opt
+mkdir -vp ${BOOT_MOUNT_DIR}/usr/{bin,lib,sbin,share,include}
+mkdir -vp ${BOOT_MOUNT_DIR}/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
 
-mkdir -vp ${pwd}/mnt/os/boot/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp,var}
-mkdir -vp ${pwd}/mnt/os/boot/etc/opt
-mkdir -vp ${pwd}/mnt/os/boot/usr/{bin,lib,sbin,share,include}
-mkdir -vp ${pwd}/mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
+# Download kernel source, verify source, & build kernel
+export INSTALL_PATH=$OS_ROOT_DIR
 
-  # Download kernel source, verify source, & build kernel
-  export INSTALL_PATH="/mnt/os/boot"
   curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
   curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
   gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
@@ -114,8 +115,9 @@ mkdir -vp ${pwd}/mnt/os/boot/usr/local/{bin,etc,games,include,lib,man,sbin,share
   make install
   cd ..
 
-sudo grub-install --target=x86_64-efi --efi-directory=${pwd}/mnt/os/efi --bootloader-id=GRUB
+sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
-sudo umount ${pwd}/mnt/os/efi
-sudo umount ${pwd}/mnt/os/boot
+sudo umount $EFI_MOUNT_DIR
+sudo umount $BOOT_MOUNT_DIR
+
 sudo losetup -d $first_unused_loop_device
