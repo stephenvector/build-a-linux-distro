@@ -14,22 +14,6 @@ OS_ROOT_DIR=${dir}/mnt/os
 EFI_MOUNT_DIR=${OS_ROOT_DIR}/efi
 BOOT_MOUNT_DIR=${OS_ROOT_DIR}/boot
 
-# glibc: Download, build, & install
-
-
-  curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz.sig
-  curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz
-  gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig glibc-2.30.tar.xz
-  # tar -xf glibc-2.30.tar.xz
-  #cd glibc-2.30
-  # mkdir "$PWD/glibcbuild"
-  #cd "$PWD/glibcbuild"
-  #"$dir/glibc-2.30/configure" --prefix="${pwd}/mnt/os/boot/usr"
-  #make
-  #make install 
-      
-
 # GNU Coreutils: Download, build, & install
 function add_coreutils {
   cd $PWD
@@ -111,10 +95,23 @@ export INSTALL_PATH=$OS_ROOT_DIR
   cd "linux-$KERNEL_VERSION"
   make ARCH=x86_64 defconfig
   make -j $(nproc)
-  make modules_install
-  make install
-  cd ..
+make modules_install
+make install
+cd ..
+  
+# glibc: Download, build, & install
+curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz.sig
+curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz
+gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
+gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig glibc-2.30.tar.xz
+tar -xf glibc-2.30.tar.xz
+cd ./glibc-2.30
+configure --prefix="${pwd}/mnt/os/boot/usr/local" --enable-kernel $KERNEL_VERSION
+make
+make install
+cd ..
 
+# Install Grub
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
 sudo umount $EFI_MOUNT_DIR
