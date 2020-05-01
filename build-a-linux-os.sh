@@ -121,4 +121,4 @@ sudo losetup -d $first_unused_loop_device
 
 sudo apt --installed list
 
-qemu-system-x86_64 -drive format=raw,media=cdrom,readonly,file=os.img
+qemu -drive format=raw,media=cdrom,readonly,file=os.img
