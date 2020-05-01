@@ -118,3 +118,5 @@ sudo umount $EFI_MOUNT_DIR
 sudo umount $BOOT_MOUNT_DIR
 
 sudo losetup -d $first_unused_loop_device
+
+qemu-system-x86_64 -drive format=raw,media=cdrom,readonly,file=os.img
