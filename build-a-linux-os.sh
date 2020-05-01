@@ -106,7 +106,7 @@ gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
 gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig glibc-2.30.tar.xz
 tar -xf glibc-2.30.tar.xz
 cd ./glibc-2.30
-configure --prefix="${pwd}/mnt/os/boot/usr/local" --enable-kernel $KERNEL_VERSION
+./configure --prefix="${pwd}/mnt/os/boot/usr/local" --enable-kernel $KERNEL_VERSION
 make
 make install
 cd ..
@@ -118,5 +118,7 @@ sudo umount $EFI_MOUNT_DIR
 sudo umount $BOOT_MOUNT_DIR
 
 sudo losetup -d $first_unused_loop_device
+
+sudo apt --installed list
 
 qemu-system-x86_64 -drive format=raw,media=cdrom,readonly,file=os.img
