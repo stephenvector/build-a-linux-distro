@@ -119,6 +119,6 @@ sudo umount $BOOT_MOUNT_DIR
 
 sudo losetup -d $first_unused_loop_device
 
-sudo apt --installed list
+sudo dpkg -l
 
-qemu -drive format=raw,media=cdrom,readonly,file=os.img
+# qemu -drive format=raw,media=cdrom,readonly,file=os.img
