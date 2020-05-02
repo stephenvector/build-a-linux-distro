@@ -23,6 +23,10 @@ addons:
       - gperf
       - libcap-dev
       - qemu
+      - qemu-kvm
+      - virt-manager
+      - virt-viewer
+      - libvirt-bin
 
 deploy:
   provider: releases
