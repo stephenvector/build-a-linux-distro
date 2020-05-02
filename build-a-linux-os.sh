@@ -8,6 +8,8 @@ function printLatestStableLinuxKernelVersion {
   echo $currentKernel
 }
 
+SYSTEMD_VERSION="245"
+
 dir="$PWD"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 OS_ROOT_DIR=${dir}/mnt/os
@@ -26,17 +28,6 @@ function add_coreutils {
   ./configure --prefix="$MOUNT_PATH"
   make --quiet
   make --quiet install
-}
-
-# systemd: Download, build, & install
-function add_systemd {
-  cd $PWD
-  curl -OL https://github.com/systemd/systemd/archive/v243.tar.gz
-  tar xf v243.tar.gz
-  cd systemd-243
-  ./configure
-  make --quiet
-  make --quiet install DESTDIR="$MOUNT_PATH"
 }
 
 # Download & Build Bash
@@ -109,6 +100,15 @@ cd ./glibc-2.30
 ./configure --prefix="${pwd}/mnt/os/boot/usr/local" --enable-kernel $KERNEL_VERSION
 make
 make install
+cd ..
+
+# systemd: Download, build, & install
+curl -OL https://github.com/systemd/systemd/archive/v${SYSTEMD_VERSION}.tar.gz
+tar xf v${SYSTEMD_VERSION}.tar.gz
+cd systemd-${SYSTEMD_VERSION}
+./configure
+make
+make install DESTDIR="$MOUNT_PATH"
 cd ..
 
 # Install Grub
