@@ -119,4 +119,6 @@ sudo umount $BOOT_MOUNT_DIR
 
 lsblk -a
 
+df
+
 sudo losetup -d $first_unused_loop_device
