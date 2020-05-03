@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pip3 install --user meson
+
 curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 
 function printLatestStableLinuxKernelVersion {
@@ -44,7 +46,7 @@ function add_bash {
   make --quiet install
 }
 
-dd if=/dev/zero of=os.img bs=1M count=512
+dd if=/dev/zero of=os.img bs=1M count=32
 
 first_unused_loop_device=$(sudo losetup -f)
 
@@ -52,9 +54,9 @@ mkfs.ext4 os.img
 
 sudo losetup -P $first_unused_loop_device os.img
 sudo parted -s $first_unused_loop_device mktable gpt
-sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 261MiB 
+sudo parted -s $first_unused_loop_device mkpart primary fat32 1MiB 16MiB 
 sudo parted -s $first_unused_loop_device set 1 esp on
-sudo parted -s $first_unused_loop_device mkpart primary ext4 261MiB 100%
+sudo parted -s $first_unused_loop_device mkpart primary ext4 16MiB 100%
 
 mkdir -p $EFI_MOUNT_DIR
 mkdir -p $BOOT_MOUNT_DIR
