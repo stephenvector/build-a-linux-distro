@@ -113,12 +113,26 @@ make
 make install DESTDIR="$MOUNT_PATH"
 cd ..
 
+cat > ${BOOT_MOUNT_DIR}/etc/fstab << "EOF"
+# file system  mount-point  type   options          dump  fsck
+#                                                         order
+
+rootfs          /               auto    defaults        1      1
+proc            /proc           proc    defaults        0      0
+sysfs           /sys            sysfs   defaults        0      0
+devpts          /dev/pts        devpts  gid=4,mode=620  0      0
+tmpfs           /dev/shm        tmpfs   defaults        0      0
+EOF
+
+
 # Install Grub
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
 df
 du -sh
 sudo cat /etc/fstab
+
+
 
 sudo umount $EFI_MOUNT_DIR
 sudo umount $BOOT_MOUNT_DIR
