@@ -113,28 +113,20 @@ make
 make install DESTDIR="$MOUNT_PATH"
 cd ..
 
-cat > ${BOOT_MOUNT_DIR}/etc/fstab << "EOF"
-# file system  mount-point  type   options          dump  fsck
-#                                                         order
-
-rootfs          /               auto    defaults        1      1
-proc            /proc           proc    defaults        0      0
-sysfs           /sys            sysfs   defaults        0      0
-devpts          /dev/pts        devpts  gid=4,mode=620  0      0
-tmpfs           /dev/shm        tmpfs   defaults        0      0
-EOF
-
-
-# Install Grub
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
-df
-du -sh
-sudo cat /etc/fstab
+p1uuid=$(lsblk ${first_unused_loop_device}p1 -no UUID)
+p2uuid=$(lsblk ${first_unused_loop_device}p2 -no UUID)
 
+# Create fstab file
+cat > ${BOOT_MOUNT_DIR}/etc/fstab << "EOF"
+UUID=$p2uuid /boot           ext4    defaults        0       2
+UUID=$p1uuid /boot/efi       vfat    umask=0077      0       1
+EOF
 
-
+# Unmount boot & efi directories
 sudo umount $EFI_MOUNT_DIR
 sudo umount $BOOT_MOUNT_DIR
 
+# Free up the loop device
 sudo losetup -d $first_unused_loop_device
