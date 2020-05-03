@@ -64,8 +64,8 @@ mkdir -p $BOOT_MOUNT_DIR
 mkfs.fat ${first_unused_loop_device}p1
 mkfs.ext4 ${first_unused_loop_device}p2
 
-sudo mount ${first_unused_loop_device}p1 $EFI_MOUNT_DIR
-sudo mount ${first_unused_loop_device}p2 $BOOT_MOUNT_DIR
+sudo mount ${first_unused_loop_device}p1 -o loop $EFI_MOUNT_DIR
+sudo mount ${first_unused_loop_device}p2 -o loop $BOOT_MOUNT_DIR
 
 # Create a directory for the final image & setup
 # using "Filesystem Hierarchy Standard" as a guide, creating
