@@ -114,11 +114,11 @@ cd ..
 # Install Grub
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
+df
+du -sh
+sudo cat /etc/fstab
+
 sudo umount $EFI_MOUNT_DIR
 sudo umount $BOOT_MOUNT_DIR
-
-lsblk -a
-
-df
 
 sudo losetup -d $first_unused_loop_device
