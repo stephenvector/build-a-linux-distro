@@ -116,6 +116,11 @@ cd ..
 
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
+
+sudo grub-mkconfig -o ${BOOT_MOUNT_DIR}/boot/grub/grub.cfg
+
+sudo cat ${BOOT_MOUNT_DIR}/boot/grub/grub.cfg
+
 p1uuid=$(lsblk ${first_unused_loop_device}p1 -no UUID)
 p2uuid=$(lsblk ${first_unused_loop_device}p2 -no UUID)
 
