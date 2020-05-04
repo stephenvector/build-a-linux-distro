@@ -90,6 +90,7 @@ make ARCH=x86_64 defconfig
 make -j $(nproc)
 make modules_install
 make install
+cp -iv arch/x86_64/boot/bzImage ${BOOT_MOUNT_DIR}/boot/vmlinuz
 cd ..
   
 # glibc: Download, build, & install
