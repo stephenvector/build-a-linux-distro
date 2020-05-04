@@ -116,10 +116,6 @@ cd ..
 
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
-sudo grub-mkconfig -o ${BOOT_MOUNT_DIR}/grub/grub.cfg
-
-sudo cat ${BOOT_MOUNT_DIR}/grub/grub.cfg
-
 # Get the uuid of each partition
 p1uuid=$(lsblk ${first_unused_loop_device}p1 -no UUID)
 p2uuid=$(lsblk ${first_unused_loop_device}p2 -no UUID)
@@ -129,6 +125,10 @@ cat > ${BOOT_MOUNT_DIR}/etc/fstab << "EOF"
 UUID=$p2uuid /boot           ext4    defaults        0       2
 UUID=$p1uuid /boot/efi       vfat    umask=0077      0       1
 EOF
+
+sudo grub-mkconfig -o ${BOOT_MOUNT_DIR}/grub/grub.cfg
+
+sudo cat ${BOOT_MOUNT_DIR}/grub/grub.cfg
 
 # Unmount boot & efi directories
 sudo umount $EFI_MOUNT_DIR
