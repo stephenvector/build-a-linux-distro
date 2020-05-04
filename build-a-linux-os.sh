@@ -13,26 +13,13 @@ function printLatestStableLinuxKernelVersion {
 }
 
 SYSTEMD_VERSION="245"
+COREUTILS_VERSION="8.32"
 
 dir="$PWD"
 KERNEL_VERSION=$(printLatestStableLinuxKernelVersion)
 OS_ROOT_DIR=${dir}/mnt/os
 EFI_MOUNT_DIR=${OS_ROOT_DIR}/efi
 BOOT_MOUNT_DIR=${OS_ROOT_DIR}/boot
-
-# GNU Coreutils: Download, build, & install
-function add_coreutils {
-  cd $PWD
-  curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz.sig
-  curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz
-  gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-8.31.tar.xz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-8.31.tar.xz.sig coreutils-8.31.tar.xz
-  tar xf coreutils-8.31.tar.xz
-  cd "$dir/coreutils-8.31"
-  ./configure --prefix="$MOUNT_PATH"
-  make --quiet
-  make --quiet install
-}
 
 # Download & Build Bash
 function add_bash {
@@ -107,7 +94,16 @@ make
 make install
 cd ..
 
-
+# GNU Coreutils: Download, build, & install
+curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz.sig
+curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz
+gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.sig
+gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.sig coreutils-${COREUTILS_VERSION}.tar.xz
+tar xf coreutils-${COREUTILS_VERSION}.tar.xz
+cd "$./coreutils-$COREUTILS_VERSION}"
+./configure --prefix="$OS_ROOT_DIR"
+make
+make install 
 
 # systemd: Download, build, & install
 curl -OL https://github.com/systemd/systemd/archive/v${SYSTEMD_VERSION}.tar.gz
