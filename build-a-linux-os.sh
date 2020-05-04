@@ -111,7 +111,7 @@ tar xf v${SYSTEMD_VERSION}.tar.gz
 cd systemd-${SYSTEMD_VERSION}
 mkdir build
 meson build/ && ninja -C build
-suso ninja install DESTDIR="$MOUNT_PATH"
+sudo ninja install DESTDIR="$MOUNT_PATH"
 cd ..
 
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
