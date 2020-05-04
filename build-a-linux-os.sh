@@ -1,7 +1,5 @@
 #!/bin/bash
 
-pip3 install --user meson
-
 curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 
 function printLatestStableLinuxKernelVersion {
@@ -100,27 +98,29 @@ gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
 gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig glibc-2.30.tar.xz
 tar -xf glibc-2.30.tar.xz
 cd ./glibc-2.30
-./configure --prefix="${pwd}/mnt/os/boot/usr/local" --enable-kernel $KERNEL_VERSION
+./configure --prefix="${BOOT_MOUNT_DIR}/usr/local" --enable-kernel $KERNEL_VERSION
 make
 make install
 cd ..
+
+
 
 # systemd: Download, build, & install
 curl -OL https://github.com/systemd/systemd/archive/v${SYSTEMD_VERSION}.tar.gz
 tar xf v${SYSTEMD_VERSION}.tar.gz
 cd systemd-${SYSTEMD_VERSION}
-./configure
-make
-make install DESTDIR="$MOUNT_PATH"
+mkdir build
+meson build/ && ninja -C build
+suso ninja install DESTDIR="$MOUNT_PATH"
 cd ..
 
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
+sudo grub-mkconfig -o ${BOOT_MOUNT_DIR}/grub/grub.cfg
 
-sudo grub-mkconfig -o ${BOOT_MOUNT_DIR}/boot/grub/grub.cfg
+sudo cat ${BOOT_MOUNT_DIR}/grub/grub.cfg
 
-sudo cat ${BOOT_MOUNT_DIR}/boot/grub/grub.cfg
-
+# Get the uuid of each partition
 p1uuid=$(lsblk ${first_unused_loop_device}p1 -no UUID)
 p2uuid=$(lsblk ${first_unused_loop_device}p2 -no UUID)
 
