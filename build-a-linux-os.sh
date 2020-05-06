@@ -21,20 +21,6 @@ OS_ROOT_DIR=${dir}/mnt/os
 EFI_MOUNT_DIR=${OS_ROOT_DIR}/efi
 BOOT_MOUNT_DIR=${OS_ROOT_DIR}/boot
 
-# Download & Build Bash
-function add_bash {
-  cd $PWD
-  curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
-  curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig
-  gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig bash-5.0.tar.gz
-  tar xf bash-5.0.tar.gz
-  cd bash-5.0
-  ./configure --prefix="$MOUNT_PATH"
-  make --quiet
-  make --quiet install
-}
-
 dd if=/dev/zero of=os.img bs=1M count=32
 
 first_unused_loop_device=$(sudo losetup -f)
@@ -103,7 +89,20 @@ tar xf coreutils-${COREUTILS_VERSION}.tar.xz
 cd "$./coreutils-$COREUTILS_VERSION}"
 ./configure --prefix="$OS_ROOT_DIR"
 make
-make install 
+make install
+cd ..
+
+# Download & Build Bash
+curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
+curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz.sig
+gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig
+gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig bash-5.0.tar.gz
+tar xf bash-5.0.tar.gz
+cd bash-5.0
+./configure --prefix="$OS_ROOT_DIR"
+make
+make install
+cd ..
 
 # systemd: Download, build, & install
 curl -OL https://github.com/systemd/systemd/archive/v${SYSTEMD_VERSION}.tar.gz
