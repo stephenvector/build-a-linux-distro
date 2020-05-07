@@ -101,6 +101,7 @@ gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig
 gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig bash-5.0.tar.gz
 tar xf bash-5.0.tar.gz
 cd bash-5.0
+./configure help
 ./configure --prefix="$OS_ROOT_DIR"
 make
 make install
