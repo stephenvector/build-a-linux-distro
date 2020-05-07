@@ -54,11 +54,11 @@ mkdir -vp ${BOOT_MOUNT_DIR}/boot/grub
 # Download kernel source, verify source, & build kernel
 export INSTALL_PATH=$OS_ROOT_DIR
 curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
-curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
-gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
-gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
+#curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
+#gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
+#gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
 unxz "linux-$KERNEL_VERSION.tar.xz"
-gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
+#gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
 tar -xf "linux-$KERNEL_VERSION.tar"
 cd "linux-$KERNEL_VERSION"
 make mrproper
@@ -66,6 +66,7 @@ make ARCH=x86_64 defconfig
 make -j $(nproc)
 make modules_install
 make install
+tree ./archx/86_64/
 cp -iv arch/x86_64/boot/bzImage ${BOOT_MOUNT_DIR}/boot/vmlinuz
 cd ..
   
