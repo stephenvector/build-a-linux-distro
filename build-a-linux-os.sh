@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export PATH=~/.local/bin:$PATH
 
 curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
