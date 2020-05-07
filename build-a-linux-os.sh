@@ -47,6 +47,7 @@ mkdir -vp ${BOOT_MOUNT_DIR}/{bin,boot,dev,etc,lib,media,mnt,opt,run,sbin,srv,tmp
 mkdir -vp ${BOOT_MOUNT_DIR}/etc/opt
 mkdir -vp ${BOOT_MOUNT_DIR}/usr/{bin,lib,sbin,share,include}
 mkdir -vp ${BOOT_MOUNT_DIR}/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
+mkdir -vp ${BOOT_MOUNT_DIR}/boot/grub
 
 # Download kernel source, verify source, & build kernel
 export INSTALL_PATH=$OS_ROOT_DIR
