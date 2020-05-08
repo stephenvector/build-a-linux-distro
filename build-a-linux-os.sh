@@ -77,6 +77,7 @@ gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
 gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig glibc-2.30.tar.xz
 tar -xf glibc-2.30.tar.xz
 cd ./glibc-2.30
+./configure --help
 ./configure --prefix="${BOOT_MOUNT_DIR}/usr/local" --enable-kernel $KERNEL_VERSION
 make
 make install
