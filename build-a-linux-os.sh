@@ -94,7 +94,7 @@ gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.
 gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.sig coreutils-${COREUTILS_VERSION}.tar.xz
 tar xf coreutils-${COREUTILS_VERSION}.tar.xz
 cd "$./coreutils-$COREUTILS_VERSION}"
-./configure --prefix="$OS_ROOT_DIR"
+./configure --prefix="$OS_ROOT_DIR" --target=x86_64-linux-gnu
 make
 make install
 cd ..
