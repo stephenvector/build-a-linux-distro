@@ -96,18 +96,18 @@ make install
 cd ..
 
 # Download & Build Bash
-curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
-curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz.sig
-gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig
-gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig bash-5.0.tar.gz
-tar xf bash-5.0.tar.gz
-cd bash-5.0
-cat ./configure
-./configure --help
-./configure --prefix="$OS_ROOT_DIR"
-make
-make install
-cd ..
+#curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
+#curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz.sig
+#gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig
+#gpg2 --verify --keyring ./gnu-keyring.gpg bash-5.0.tar.gz.sig bash-5.0.tar.gz
+#tar xf bash-5.0.tar.gz
+#cd bash-5.0
+#cat ./configure
+#./configure --help
+#./configure --prefix="$OS_ROOT_DIR"
+#make
+#make install
+#cd ..
 
 # systemd: Download, build, & install
 curl -OL https://github.com/systemd/systemd/archive/v${SYSTEMD_VERSION}.tar.gz
