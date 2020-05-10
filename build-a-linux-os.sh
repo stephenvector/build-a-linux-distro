@@ -75,17 +75,15 @@ cp -iv arch/x86_64/boot/bzImage ${BOOT_MOUNT_DIR}/boot/vmlinuz
 cd ..
   
 # glibc: Download, build, & install
-curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz.sig
-curl -OL http://ftp.wayne.edu/gnu/libc/glibc-2.30.tar.xz
-gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig
-gpg2 --verify --keyring ./gnu-keyring.gpg glibc-2.30.tar.xz.sig glibc-2.30.tar.xz
-tar -xf glibc-2.30.tar.xz
-cd ./glibc-2.30
-./configure --help
-./configure --prefix="${BOOT_MOUNT_DIR}/usr/local" --enable-kernel $KERNEL_VERSION
+git clone git://sourceware.org/git/glibc.git
+cd glibc
+git checkout master
+mkdir build
+cd build
+../configure --prefix="${BOOT_MOUNT_DIR}/usr/local" --enable-kernel $KERNEL_VERSION
 make
 make install
-cd ..
+cd ../..
 
 # GNU Coreutils: Download, build, & install
 curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz.sig
