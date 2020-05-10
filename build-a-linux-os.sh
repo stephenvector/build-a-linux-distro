@@ -55,24 +55,24 @@ mkdir -vp ${BOOT_MOUNT_DIR}/usr/{bin,lib,sbin,share,include}
 mkdir -vp ${BOOT_MOUNT_DIR}/usr/local/{bin,etc,games,include,lib,man,sbin,share,src}
 mkdir -vp ${BOOT_MOUNT_DIR}/boot/grub
 
-# Download kernel source, verify source, & build kernel
-export INSTALL_PATH=$OS_ROOT_DIR
-curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
-#curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
-#gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
-#gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
-unxz "linux-$KERNEL_VERSION.tar.xz"
-#gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
-tar -xf "linux-$KERNEL_VERSION.tar"
-cd "linux-$KERNEL_VERSION"
-make mrproper
-make ARCH=x86_64 defconfig
-make -j $(nproc)
-make modules_install
-make install
-tree ./archx/86_64/
-cp -iv arch/x86_64/boot/bzImage ${BOOT_MOUNT_DIR}/boot/vmlinuz
-cd ..
+# # Download kernel source, verify source, & build kernel
+# export INSTALL_PATH=$OS_ROOT_DIR
+# curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
+# #curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
+# #gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
+# #gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
+# unxz "linux-$KERNEL_VERSION.tar.xz"
+# #gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
+# tar -xf "linux-$KERNEL_VERSION.tar"
+# cd "linux-$KERNEL_VERSION"
+# make mrproper
+# make ARCH=x86_64 defconfig
+# make -j $(nproc)
+# make modules_install
+# make install
+# tree ./archx/86_64/
+# cp -iv arch/x86_64/boot/bzImage ${BOOT_MOUNT_DIR}/boot/vmlinuz
+# cd ..
   
 # glibc: Download, build, & install
 git clone git://sourceware.org/git/glibc.git
@@ -112,13 +112,13 @@ cd ..
 #cd ..
 
 # systemd: Download, build, & install
-curl -OL https://github.com/systemd/systemd/archive/v${SYSTEMD_VERSION}.tar.gz
-tar xf v${SYSTEMD_VERSION}.tar.gz
-cd systemd-${SYSTEMD_VERSION}
-mkdir build
-meson build/ && ninja -C build
-sudo ninja install DESTDIR="$MOUNT_PATH"
-cd ..
+# curl -OL https://github.com/systemd/systemd/archive/v${SYSTEMD_VERSION}.tar.gz
+# tar xf v${SYSTEMD_VERSION}.tar.gz
+# cd systemd-${SYSTEMD_VERSION}
+# mkdir build
+# meson build/ && ninja -C build
+# sudo ninja install DESTDIR="$MOUNT_PATH"
+# cd ..
 
 sudo grub-install --target=x86_64-efi --efi-directory=${EFI_MOUNT_DIR} --bootloader-id=GRUB
 
