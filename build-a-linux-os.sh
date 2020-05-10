@@ -80,22 +80,22 @@ cd glibc
 git checkout master
 mkdir build
 cd build
-../configure  --build --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix="${BOOT_MOUNT_DIR}/usr/local" --enable-kernel $KERNEL_VERSION
+../configure
 make
 make install
 cd ../..
 
 # GNU Coreutils: Download, build, & install
-curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz.sig
-curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz
-gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.sig
-gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.sig coreutils-${COREUTILS_VERSION}.tar.xz
-tar xf coreutils-${COREUTILS_VERSION}.tar.xz
-cd "$./coreutils-$COREUTILS_VERSION}"
-./configure --prefix="$OS_ROOT_DIR" --target=x86_64-linux-gnu
-make
-make install
-cd ..
+#curl -OL https://ftp.gnu.org/gnu/coreutils/#coreutils-${COREUTILS_VERSION}.tar.xz.sig
+#curl -OL https://ftp.gnu.org/gnu/coreutils/#coreutils-${COREUTILS_VERSION}.tar.xz
+#gpg2 --verify --keyring ./gnu-keyring.gpg #coreutils-${COREUTILS_VERSION}.tar.xz.sig
+#gpg2 --verify --keyring ./gnu-keyring.gpg # #coreutils-${COREUTILS_VERSION}.tar.xz.sig coreutils-${COREUTILS_VERSION}.tar.xz
+#tar xf coreutils-${COREUTILS_VERSION}.tar.xz
+#cd "$./coreutils-$COREUTILS_VERSION}"
+#./configure --prefix="$OS_ROOT_DIR" --target=x86_64-linux-gnu
+#make
+#make install
+#cd ..
 
 # Download & Build Bash
 #curl -OL https://ftp.gnu.org/gnu/bash/bash-5.0.tar.gz
