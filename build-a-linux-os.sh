@@ -80,7 +80,7 @@ cd glibc
 git checkout master
 mkdir build
 cd build
-../configure    --target=x86_64-linux-gnu --prefix="${BOOT_MOUNT_DIR}/usr/local" --enable-kernel $KERNEL_VERSION
+../configure  --build --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix="${BOOT_MOUNT_DIR}/usr/local" --enable-kernel $KERNEL_VERSION
 make
 make install
 cd ../..
