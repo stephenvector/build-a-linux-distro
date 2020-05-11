@@ -80,7 +80,7 @@ cd glibc
 git checkout master
 mkdir build
 cd build
-../configure
+../configure --prefix="$OS_ROOT_DIR" 
 make
 make install
 cd ../..
