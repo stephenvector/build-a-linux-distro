@@ -81,7 +81,7 @@ git checkout master
 mkdir build
 cd build
 ../configure --prefix="$OS_ROOT_DIR" 
-make
+make --quiet
 make install
 cd ../..
 
