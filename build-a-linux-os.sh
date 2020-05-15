@@ -66,11 +66,15 @@ tar -xf "linux-$KERNEL_VERSION.tar"
 cd "linux-$KERNEL_VERSION"
 make mrproper
 make ARCH=x86_64 defconfig
+echo "running make"
 make --quiet -j $(nproc)
+echo "running make modules_install" 
 make --quiet modules_install
+echo "running make install"
 make --quiet install
 tree ./archx/86_64/
 cp -iv arch/x86_64/boot/bzImage ${BOOT_MOUNT_DIR}/boot/vmlinuz
+echo "kernel building done"
 cd ..
   
 # glibc: Download, build, & install
@@ -80,11 +84,14 @@ git checkout master
 mkdir build
 cd build
 ../configure --prefix="$OS_ROOT_DIR" 
+echo "make: glibc"
 make --quiet
+echo "make install: glibc"
 make --quiet install
 cd ../..
 
 # GNU Coreutils: Download, build, & install
+echo "[coreutils] Begins"
 curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz.sig
 curl -OL https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz
 gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.sig
@@ -92,8 +99,11 @@ gpg2 --verify --keyring ./gnu-keyring.gpg coreutils-${COREUTILS_VERSION}.tar.xz.
 tar xf coreutils-${COREUTILS_VERSION}.tar.xz
 cd "$./coreutils-$COREUTILS_VERSION}"
 ./configure --prefix="$OS_ROOT_DIR" --target=x86_64-linux-gnu
+echo "[coreutils] running make"
 make --quiet
+echo "[coreutils] running make install"
 make --quiet install
+echo "[coreutils] Ends"
 cd ..
 
 # Download & Build Bash
