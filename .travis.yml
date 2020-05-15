@@ -1,6 +1,6 @@
 dist: focal
 sudo: required
-script: "sudo ./build-a-linux-os.sh"
+script: "travis_wait 30 sudo ./build-a-linux-os.sh"
 before_install:
   - pip3 install --user meson
   - chmod +x ./build-a-linux-os.sh

@@ -64,7 +64,9 @@ unxz "linux-$KERNEL_VERSION.tar.xz"
 gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
 tar -xf "linux-$KERNEL_VERSION.tar"
 cd "linux-$KERNEL_VERSION"
+echo "running make mrproper"
 make mrproper
+echo "hmm"
 make ARCH=x86_64 defconfig
 echo "running make"
 make --quiet -j $(nproc)
