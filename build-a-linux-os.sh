@@ -8,7 +8,7 @@ gcc --version
 
 export PATH=~/.local/bin:$PATH
 
-curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
+#curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 
 function printLatestStableLinuxKernelVersion {
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
@@ -60,7 +60,6 @@ export INSTALL_PATH=$OS_ROOT_DIR
 curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
 curl -OL "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.sign"
 gpg2 --locate-keys torvalds@kernel.org gregkh@kernel.org
-gpg2 --verify "linux-$KERNEL_VERSION.tar.sign"
 unxz "linux-$KERNEL_VERSION.tar.xz"
 gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
 tar -xf "linux-$KERNEL_VERSION.tar"
