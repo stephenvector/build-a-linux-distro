@@ -2,13 +2,9 @@
 
 set -e
 
-gcc -v
-
-gcc --version
-
 export PATH=~/.local/bin:$PATH
 
-#curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
+curl -OL https://ftp.gnu.org/gnu/gnu-keyring.gpg
 
 function printLatestStableLinuxKernelVersion {
   unparsedStableKernel=$(curl -s https://www.kernel.org/ | tr -d '[:space:]' | grep -Po '<td>stable:</td><td><strong>[0-9]+.[0-9]+.[0-9]+</strong></td>')
@@ -64,19 +60,13 @@ unxz "linux-$KERNEL_VERSION.tar.xz"
 gpg2 --verify "linux-$KERNEL_VERSION.tar.sign" "linux-$KERNEL_VERSION.tar"
 tar -xf "linux-$KERNEL_VERSION.tar"
 cd "linux-$KERNEL_VERSION"
-echo "running make mrproper"
 make mrproper
-echo "hmm"
 make ARCH=x86_64 defconfig
-echo "running make"
-make --quiet -j $(nproc)
-echo "running make modules_install" 
-make --quiet modules_install
-echo "running make install"
-make --quiet install
+make -j $(nproc)
+make modules_install
+make install
 tree ./archx/86_64/
 cp -iv arch/x86_64/boot/bzImage ${BOOT_MOUNT_DIR}/boot/vmlinuz
-echo "kernel building done"
 cd ..
   
 # glibc: Download, build, & install
